@@ -9,7 +9,7 @@
 ## Team Information
 * Team name: MSN
 * Team members
-  * MEMBER1
+  * Sai Sandeep Ramavath
   * MEMBER2
   * MEMBER3
   * MEMBER4
