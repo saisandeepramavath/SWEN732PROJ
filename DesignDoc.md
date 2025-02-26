@@ -10,7 +10,7 @@
 * Team name: MSN
 * Team members
   * Sai Sandeep Ramavath
-  * MEMBER2
+  * Mallikarjuna Tupakula
   * MEMBER3
   * MEMBER4
 
