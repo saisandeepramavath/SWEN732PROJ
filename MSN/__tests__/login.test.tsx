@@ -17,10 +17,6 @@ describe('Login', () => {
 		fireEvent.changeText(getByPlaceholderText('Password'), 'wrongpassword');
 		fireEvent.press(getByText('Login'));
 
-		// await waitFor(() => {
-		// 	expect(auth().signInWithEmailAndPassword).toHaveBeenCalledWith('john@example.com', 'wrongpassword');
-		// 	expect(getByText('Sign in failed:')).toBeTruthy();
-		// });
 	});
 
 	it('should navigate to home on successful login', async () => {
@@ -29,9 +25,5 @@ describe('Login', () => {
 		fireEvent.changeText(getByPlaceholderText('Email'), 'john@example.com');
 		fireEvent.changeText(getByPlaceholderText('Password'), 'correctpassword');
 		fireEvent.press(getByText('Login'));
-
-		// await waitFor(() => {
-		// 	expect(auth().signInWithEmailAndPassword).toHaveBeenCalledWith('john@example.com', 'correctpassword');
-		// });
 	});
 });
