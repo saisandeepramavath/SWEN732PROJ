@@ -1,39 +1,55 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack, useRouter, useSegments } from 'expo-router';
+import { useEffect, useState } from 'react';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { View, ActivityIndicator } from 'react-native';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+export  function RootLayout() {
+	const [initializing, setInitializing] = useState(true);
+	const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+	const router = useRouter();
+	const segments = useSegments();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+	const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
+		console.log('onAuthStateChanged', user);
+		setUser(user);
+		if (initializing) setInitializing(false);
+	};
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+	useEffect(() => {
+		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+		return subscriber;
+	}, []);
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+	useEffect(() => {
+		if (initializing) return;
 
-  if (!loaded) {
-    return null;
-  }
+		const inAuthGroup = segments[0] === '(auth)';
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+		if (user && !inAuthGroup) {
+			router.replace('/(auth)/home');
+		} else if (!user && inAuthGroup) {
+			router.replace('/');
+		}
+	}, [user, initializing]);
+
+	if (initializing)
+		return (
+			<View
+				style={{
+					alignItems: 'center',
+					justifyContent: 'center',
+					flex: 1
+				}}
+			>
+				<ActivityIndicator size="large" />
+			</View>
+		);
+
+	return (
+		<Stack>
+			<Stack.Screen name="index" options={{ title: 'Login' }} />
+      <Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+			<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+		</Stack>
+	);
 }
