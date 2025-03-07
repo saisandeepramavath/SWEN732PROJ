@@ -37,18 +37,6 @@ describe('Signup', () => {
     fireEvent.press(getByTestId('signup-button'));
     console.log('🚀 Button Pressed in Test');
   
-    // Wait for authentication to be called
-    // await waitFor(() => {
-    //   expect(auth().createUserWithEmailAndPassword).toHaveBeenCalledTimes(1);
-    //   expect(auth().createUserWithEmailAndPassword).toHaveBeenCalledWith('john@example.com', 'password123');
-    //   expect(firestore().collection).toHaveBeenCalledWith('users');
-    //   // expect(firestore().collection('users').doc).toHaveBeenCalledWith(0);
-    //   expect(firestore().collection('users').doc('123').set).toHaveBeenCalledWith({
-    //     fullName: 'John Doe',
-    //     email: 'john@example.com',
-    //     phoneNumber: '1234567890',
-    //   });
-    // });
   });
   
   
