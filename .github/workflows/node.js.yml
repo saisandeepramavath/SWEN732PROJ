@@ -37,7 +37,7 @@ jobs:
         run: sleep 10 # Adjust sleep duration as needed
 
       - name: Build
-        run: npm build --if-present
+        run: npm run build --if-present
       
       - name: Run Tests
         run: npm test
