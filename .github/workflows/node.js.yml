@@ -38,6 +38,7 @@ jobs:
 
       - name: Build
         run: npm run build --if-present
+        working-directory: MSN
       
       - name: Run Tests
         run: npm test
