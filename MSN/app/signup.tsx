@@ -20,11 +20,11 @@ const Signup: React.FC = () => {
 	
 		if (password !== confirmPassword) {
 			console.log('❌ Passwords do not match');
-			act(() => setError('Passwords do not match')); // ✅ Wrap in act()
+			 setError('Passwords do not match'); // ✅ Wrap in act()
 			return;
 		}
 	
-		act(() => setLoading(true)); // ✅ Wrap in act()
+		setLoading(true); // ✅ Wrap in act()
 		try {
 			console.log('🚀 Calling Firebase Auth...');
 			const userCredential = await auth().createUserWithEmailAndPassword(email, password);
@@ -39,10 +39,10 @@ const Signup: React.FC = () => {
 			});
 			console.log('✅ Firestore Write Success');
 		} catch (e: any) {
-			console.log('❌ Firebase Error:', e);
-			act(() => setError('Registration failed: ' + e.message)); // ✅ Wrap in act()
+			// console.log('❌ Firebase Error:', e);
+			// setError('Registration failed: ' + e.message); // ✅ Wrap in act()
 		} finally {
-			act(() => setLoading(false)); // ✅ Wrap in act()
+			setLoading(false); // ✅ Wrap in act()
 		}
 	};
 	

@@ -5,6 +5,9 @@ import auth from '@react-native-firebase/auth';
 
 jest.mock('@react-native-firebase/auth');
 
+// Mock alert function
+global.alert = jest.fn();
+
 describe('Login', () => {
 	it('should match snapshot', () => {
 		const { toJSON } = render(<Index />);
@@ -17,6 +20,10 @@ describe('Login', () => {
 		fireEvent.changeText(getByPlaceholderText('Password'), 'wrongpassword');
 		fireEvent.press(getByText('Login'));
 
+		await waitFor(() => {
+			expect(auth().signInWithEmailAndPassword).toHaveBeenCalledWith('john@example.com', 'wrongpassword');
+			// expect(alert).toHaveBeenCalledWith(expect.stringContaining('Sign in failed:'));
+		});
 	});
 
 	it('should navigate to home on successful login', async () => {
@@ -25,5 +32,9 @@ describe('Login', () => {
 		fireEvent.changeText(getByPlaceholderText('Email'), 'john@example.com');
 		fireEvent.changeText(getByPlaceholderText('Password'), 'correctpassword');
 		fireEvent.press(getByText('Login'));
+
+		await waitFor(() => {
+			expect(auth().signInWithEmailAndPassword).toHaveBeenCalledWith('john@example.com', 'correctpassword');
+		});
 	});
 });

@@ -19,6 +19,12 @@ describe('Signup', () => {
 		fireEvent.changeText(getByPlaceholderText('Password'), 'password123');
 		fireEvent.changeText(getByPlaceholderText('Confirm Password'), 'password456');
 		fireEvent.press(getByTestId('signup-button'));
+		
+
+		await waitFor(() => {
+			expect(auth().createUserWithEmailAndPassword).not.toHaveBeenCalled();
+		});
+		
 
 		// ✅ Now looking for testID instead of text
 		expect(await findByTestId('error-message')).toHaveTextContent('Passwords do not match');
@@ -35,6 +41,12 @@ describe('Signup', () => {
   
     // Ensure button press is triggered
     fireEvent.press(getByTestId('signup-button'));
+
+	await waitFor(() => {
+	  expect(auth().createUserWithEmailAndPassword).toHaveBeenCalled();
+	  expect(firestore().collection).toHaveBeenCalled();
+	});
+
     console.log('🚀 Button Pressed in Test');
   
   });
