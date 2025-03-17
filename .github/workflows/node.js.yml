@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - dev  # Change this to your branch name if needed
+      - dev
   pull_request:
     branches:
       - main
@@ -16,30 +16,33 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensure Jest can compare against origin/main
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Change to match your project requirement
-
-      - name: Navigate to MSN directory
-        run: cd MSN
+          node-version: 18
 
       - name: Install Dependencies
-        run: ls && npm install
+        run: npm install
         working-directory: MSN
 
       - name: Start Server in Background
-        run: ls && npm start &
+        run: npm start &
         working-directory: MSN
 
       - name: Wait for Server to Start
-        run: sleep 10 # Adjust sleep duration as needed
+        run: npx wait-on http://localhost:3000  # Adjust port if needed
 
       - name: Build
-        run: ls && npm run build --if-present
+        run: npm run build --if-present
         working-directory: MSN
-      
+
+      - name: Run Jest Test Discovery (Debugging)
+        run: npx jest --listTests
+        working-directory: MSN
+
       - name: Run Tests
-        run: ls && npm run test
+        run: npm run test -- --coverage=true
         working-directory: MSN
