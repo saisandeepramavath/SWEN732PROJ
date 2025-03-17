@@ -20,7 +20,7 @@
     "setupFilesAfterEnv": [
       "./jestSetup.js"
     ],
-    "testMatch": ["**/__test__/**/*.test.tsx"],
+    "testMatch": ["**/__tests__/**/*.test.tsx"],
     "collectCoverageFrom": [
       "**/*.{ts,tsx,js,jsx}",
       "!**/coverage/**",
