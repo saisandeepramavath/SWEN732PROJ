@@ -33,7 +33,7 @@ jobs:
         working-directory: MSN
 
       - name: Wait for Server to Start
-        run: npx wait-on http://localhost:8081  # Adjust port if needed
+        run: sleep(10)  # Adjust port if needed
 
       - name: Build
         run: npm run build --if-present
