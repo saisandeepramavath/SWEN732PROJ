@@ -1,50 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1742100035669" clover="3.2.0">
-  <project timestamp="1742100035669" name="All files">
-    <metrics statements="38" coveredstatements="37" conditionals="10" coveredconditionals="10" methods="5" coveredmethods="4" elements="53" coveredelements="51" complexity="0" loc="38" ncloc="38" packages="1" files="2" classes="2"/>
-    <file name="index.tsx" path="/Volumes/T7Shield/Projects/SWEN732PROJ/MSN/app/index.tsx">
-      <metrics statements="12" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="2"/>
-      <line num="18" count="12" type="stmt"/>
-      <line num="19" count="12" type="stmt"/>
-      <line num="20" count="12" type="stmt"/>
-      <line num="21" count="12" type="stmt"/>
-      <line num="23" count="12" type="stmt"/>
-      <line num="24" count="2" type="stmt"/>
-      <line num="25" count="2" type="stmt"/>
-      <line num="26" count="2" type="stmt"/>
-      <line num="30" count="2" type="stmt"/>
-      <line num="34" count="12" type="stmt"/>
-      <line num="62" count="0" type="stmt"/>
-      <line num="72" count="2" type="stmt"/>
-    </file>
-    <file name="signup.tsx" path="/Volumes/T7Shield/Projects/SWEN732PROJ/MSN/app/signup.tsx">
-      <metrics statements="26" coveredstatements="26" conditionals="8" coveredconditionals="8" methods="2" coveredmethods="2"/>
-      <line num="7" count="1" type="stmt"/>
-      <line num="8" count="17" type="stmt"/>
-      <line num="9" count="16" type="stmt"/>
-      <line num="10" count="16" type="stmt"/>
-      <line num="11" count="16" type="stmt"/>
-      <line num="12" count="16" type="stmt"/>
-      <line num="13" count="16" type="stmt"/>
-      <line num="14" count="16" type="stmt"/>
-      <line num="18" count="16" type="stmt"/>
-      <line num="19" count="2" type="stmt"/>
-      <line num="21" count="2" type="cond" truecount="2" falsecount="0"/>
-      <line num="22" count="1" type="stmt"/>
-      <line num="23" count="1" type="stmt"/>
-      <line num="24" count="1" type="stmt"/>
-      <line num="27" count="1" type="stmt"/>
-      <line num="28" count="1" type="stmt"/>
-      <line num="29" count="1" type="stmt"/>
-      <line num="30" count="1" type="stmt"/>
-      <line num="31" count="1" type="stmt"/>
-      <line num="33" count="1" type="stmt"/>
-      <line num="34" count="1" type="stmt"/>
-      <line num="35" count="1" type="stmt"/>
-      <line num="40" count="1" type="stmt"/>
-      <line num="45" count="1" type="stmt"/>
-      <line num="51" count="16" type="stmt"/>
-      <line num="104" count="1" type="stmt"/>
-    </file>
+<coverage generated="1742351366831" clover="3.2.0">
+  <project timestamp="1742351366831" name="All files">
+    <metrics statements="104" coveredstatements="37" conditionals="30" coveredconditionals="10" methods="14" coveredmethods="4" elements="148" coveredelements="51" complexity="0" loc="104" ncloc="104" packages="6" files="9" classes="9"/>
+    <package name="__tests__">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="App.spec.tsx" path="/Volumes/T7Shield/SWEN732PROJ/MSN/__tests__/App.spec.tsx">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="8" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="app">
+      <metrics statements="38" coveredstatements="37" conditionals="10" coveredconditionals="10" methods="5" coveredmethods="4"/>
+      <file name="index.tsx" path="/Volumes/T7Shield/SWEN732PROJ/MSN/app/index.tsx">
+        <metrics statements="12" coveredstatements="11" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="2"/>
+        <line num="18" count="12" type="stmt"/>
+        <line num="19" count="11" type="stmt"/>
+        <line num="20" count="11" type="stmt"/>
+        <line num="21" count="11" type="stmt"/>
+        <line num="23" count="11" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="26" count="2" type="stmt"/>
+        <line num="30" count="2" type="stmt"/>
+        <line num="34" count="11" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="72" count="1" type="stmt"/>
+      </file>
+      <file name="signup.tsx" path="/Volumes/T7Shield/SWEN732PROJ/MSN/app/signup.tsx">
+        <metrics statements="26" coveredstatements="26" conditionals="8" coveredconditionals="8" methods="2" coveredmethods="2"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="16" type="stmt"/>
+        <line num="9" count="16" type="stmt"/>
+        <line num="10" count="16" type="stmt"/>
+        <line num="11" count="16" type="stmt"/>
+        <line num="12" count="16" type="stmt"/>
+        <line num="13" count="16" type="stmt"/>
+        <line num="14" count="16" type="stmt"/>
+        <line num="18" count="16" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="21" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="30" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="34" count="1" type="stmt"/>
+        <line num="35" count="1" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="51" count="16" type="stmt"/>
+        <line num="104" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="app.(auth)">
+      <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+      <file name="home.tsx" path="/Volumes/T7Shield/SWEN732PROJ/MSN/app/(auth)/home.tsx">
+        <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="constants">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="Colors.ts" path="/Volumes/T7Shield/SWEN732PROJ/MSN/constants/Colors.ts">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="hooks">
+      <metrics statements="12" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <file name="useColorScheme.ts" path="/Volumes/T7Shield/SWEN732PROJ/MSN/hooks/useColorScheme.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="useColorScheme.web.ts" path="/Volumes/T7Shield/SWEN732PROJ/MSN/hooks/useColorScheme.web.ts">
+        <metrics statements="7" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+      </file>
+      <file name="useThemeColor.ts" path="/Volumes/T7Shield/SWEN732PROJ/MSN/hooks/useThemeColor.ts">
+        <metrics statements="5" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="13" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="scripts">
+      <metrics statements="44" coveredstatements="0" conditionals="14" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <file name="reset-project.js" path="/Volumes/T7Shield/SWEN732PROJ/MSN/scripts/reset-project.js">
+        <metrics statements="44" coveredstatements="0" conditionals="14" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <line num="9" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="43" count="0" type="stmt"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="50" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="60" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
+        <line num="69" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="79" count="0" type="stmt"/>
+        <line num="80" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="104" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="105" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="106" count="0" type="stmt"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="109" count="0" type="stmt"/>
+      </file>
+    </package>
   </project>
 </coverage>

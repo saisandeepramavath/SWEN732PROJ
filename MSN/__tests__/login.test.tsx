@@ -2,12 +2,12 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import Index from '../app/index';
 import auth from '@react-native-firebase/auth';
-
+// import { getApp } from '@react-native-firebase/app';
 jest.mock('@react-native-firebase/auth');
 
 // Mock alert function
 global.alert = jest.fn();
-
+// const auth = getAuth();
 describe('Login', () => {
 	it('should match snapshot', () => {
 		const { toJSON } = render(<Index />);
