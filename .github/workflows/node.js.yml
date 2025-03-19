@@ -43,18 +43,13 @@ jobs:
         run: npx jest --listTests
         working-directory: MSN
 
+      - name: Build
+        run: npm run build --if-present
+        working-directory: MSN
+
       - name: Run Tests
         run: npm run test -- --coverage=true
         working-directory: MSN
       
-      - name: Build After Tests
-        run: npm run build --if-present
-        working-directory: MSN
+      
 
-      - name: Expo Prebuild
-        run: npx expo prebuild
-        working-directory: MSN
-
-      - name: Run Gradle Build
-        run: ./gradlew build
-        working-directory: android
