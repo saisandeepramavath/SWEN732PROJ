@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.62% </span>
+                <span class="strong">96.66% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/32</span>
+                <span class='fraction'>29/30</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/6</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.85% </span>
+                <span class="strong">96.66% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>26/28</span>
+                <span class='fraction'>29/30</span>
             </div>
         
             
@@ -197,7 +197,10 @@
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
 <a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -211,7 +214,7 @@
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
@@ -237,9 +240,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -337,6 +341,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { FirebaseError } from 'firebase/app';
 import { act } from 'react-test-renderer';
+import { useRouter } from 'expo-router';
 const Signup: React.FC = () =&gt; {
 	const [fullName, setFullName] = useState('');
 	const [email, setEmail] = useState('');
@@ -345,7 +350,7 @@ const Signup: React.FC = () =&gt; {
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState&lt;string | null&gt;(null);
-&nbsp;
+	const router = useRouter();
 	
 &nbsp;
 	const handleSubmit = async () =&gt; {
@@ -353,11 +358,11 @@ const Signup: React.FC = () =&gt; {
 	
 		if (password !== confirmPassword) {
 			console.log('❌ Passwords do not match');
-			act(() =&gt; setError('Passwords do not match')); // ✅ Wrap in act()
+			 setError('Passwords do not match'); // ✅ Wrap in act()
 			return;
 		}
 	
-		act(() =&gt; setLoading(true)); // ✅ Wrap in act()
+		setLoading(true); // ✅ Wrap in act()
 		try {
 			console.log('🚀 Calling Firebase Auth...');
 			const userCredential = await auth().createUserWithEmailAndPassword(email, password);
@@ -370,12 +375,13 @@ const Signup: React.FC = () =&gt; {
 				email,
 				phoneNumber,
 			});
-			console.log('✅ Firestore Write Success');
+			router.push('/')
+<span class="cstat-no" title="statement not covered" >			console.log('✅ Firestore Write Success');</span>
 		} catch (e: any) {
-<span class="cstat-no" title="statement not covered" >			console.log('❌ Firebase Error:', e);</span>
-<span class="cstat-no" title="statement not covered" >			act(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >setError('Registration failed: ' + e.message))</span>; </span>// ✅ Wrap in act()
+			console.log('❌ Firebase Error:', e);
+			setError('Registration failed: ' + e.message); // ✅ Wrap in act()
 		} finally {
-			act(() =&gt; setLoading(false)); // ✅ Wrap in act()
+			setLoading(false); // ✅ Wrap in act()
 		}
 	};
 	
@@ -472,7 +478,7 @@ export default Signup;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-03-07T06:58:18.085Z
+                at 2025-03-19T02:09:10.393Z
             </div>
         <script src="../prettify.js"></script>
         <script>

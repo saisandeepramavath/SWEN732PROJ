@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { FirebaseError } from 'firebase/app';
 import { act } from 'react-test-renderer';
+import { useRouter } from 'expo-router';
 const Signup: React.FC = () => {
 	const [fullName, setFullName] = useState('');
 	const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const Signup: React.FC = () => {
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-
+	const router = useRouter();
 	
 
 	const handleSubmit = async () => {
@@ -37,10 +38,11 @@ const Signup: React.FC = () => {
 				email,
 				phoneNumber,
 			});
+			router.push('/')
 			console.log('✅ Firestore Write Success');
 		} catch (e: any) {
-			// console.log('❌ Firebase Error:', e);
-			// setError('Registration failed: ' + e.message); // ✅ Wrap in act()
+			console.log('❌ Firebase Error:', e);
+			setError('Registration failed: ' + e.message); // ✅ Wrap in act()
 		} finally {
 			setLoading(false); // ✅ Wrap in act()
 		}

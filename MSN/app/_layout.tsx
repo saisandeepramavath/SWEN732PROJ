@@ -5,7 +5,7 @@ import { View, ActivityIndicator } from 'react-native';
 
 export  function RootLayout() {
 	const [initializing, setInitializing] = useState(true);
-	const [user, setUser] = useState<FirebaseAuthTypes.User | null>();
+	const [user, setUser] = useState<FirebaseAuthTypes.User | null>()
 	const router = useRouter();
 	const segments = useSegments();
 

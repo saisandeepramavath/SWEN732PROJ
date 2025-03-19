@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
 	Text,
 	View,
@@ -9,23 +9,39 @@ import {
 	ActivityIndicator,
 	TouchableOpacity
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import auth from '@react-native-firebase/auth';
+import { useRouter } from 'expo-router'; 
+import { getApp } from '@react-native-firebase/app';
+import { getAuth, onAuthStateChanged } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import * as Contacts from 'expo-contacts';
 import { FirebaseError } from 'firebase/app';
-import { act } from 'react-test-renderer';
 
 export default function Index() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
+	const app = getApp();
+	const auth = getAuth(app);
+
+	useEffect(() => {
+		const unsubscribe = onAuthStateChanged(auth, (user) => {
+			if (user) {
+				router.replace('/(auth)/home');
+			}
+		});
+
+		return () => unsubscribe();
+	}, [auth, router]);
 
 	const signIn = async () => {
 		setLoading(true);
 		try {
-			await auth().signInWithEmailAndPassword(email, password);
+			await auth.signInWithEmailAndPassword(email, password);
+			router.replace('/(auth)/home');
 		} catch (e: any) {
-			
+			const error = e as FirebaseError;
+			alert('Sign in failed: ' + error.message);
 		} finally {
 			setLoading(false);
 		}

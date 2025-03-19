@@ -15,6 +15,7 @@ describe('Login', () => {
 	});
 
 	it('should display error on failed login', async () => {
+	
 		const { getByPlaceholderText, getByText } = render(<Index />);
 		fireEvent.changeText(getByPlaceholderText('Email'), 'john@example.com');
 		fireEvent.changeText(getByPlaceholderText('Password'), 'wrongpassword');
@@ -33,8 +34,8 @@ describe('Login', () => {
 		fireEvent.changeText(getByPlaceholderText('Password'), 'correctpassword');
 		fireEvent.press(getByText('Login'));
 
-		// await waitFor(() => {
-		// 	expect(auth().signInWithEmailAndPassword).toHaveBeenCalledWith('john@example.com', 'correctpassword');
-		// });
+		await waitFor(() => {
+			expect(auth().signInWithEmailAndPassword).toHaveBeenCalledWith('john@example.com', 'correctpassword');
+		});
 	});
 });
