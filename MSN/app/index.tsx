@@ -23,11 +23,11 @@ export default function Index() {
 	const router = useRouter();
 	const app = getApp();
 	const auth = getAuth(app);
-
+	
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, (user) => {
 			if (user) {
-				router.replace('/(auth)/home');
+				router.replace('/(auth)/groups');
 			}
 		});
 
@@ -38,7 +38,8 @@ export default function Index() {
 		setLoading(true);
 		try {
 			await auth.signInWithEmailAndPassword(email, password);
-			router.replace('/(auth)/home');
+
+			router.replace('/(auth)/groups');
 		} catch (e: any) {
 			const error = e as FirebaseError;
 			alert('Sign in failed: ' + error.message);

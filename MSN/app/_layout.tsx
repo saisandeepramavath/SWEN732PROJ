@@ -1,9 +1,14 @@
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { useEffect, useState } from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { View, ActivityIndicator } from 'react-native';
-
-export  function RootLayout() {
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { RecoilRoot } from 'recoil';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();//Ignore all log notifications
+export function RootLayout() {
 	const [initializing, setInitializing] = useState(true);
 	const [user, setUser] = useState<FirebaseAuthTypes.User | null>()
 	const router = useRouter();
@@ -13,6 +18,7 @@ export  function RootLayout() {
 		console.log('onAuthStateChanged', user);
 		setUser(user);
 		if (initializing) setInitializing(false);
+
 	};
 
 	useEffect(() => {
@@ -26,11 +32,11 @@ export  function RootLayout() {
 		const inAuthGroup = segments[0] === '(auth)';
 
 		if (user && !inAuthGroup) {
-			router.replace('/(auth)/home');
+			router.replace('/(auth)/groups');
 		} else if (!user && inAuthGroup) {
 			router.replace('/');
 		}
-	}, [user, initializing]);
+	}, [user, initializing,onAuthStateChanged]);
 
 	if (initializing)
 		return (
@@ -46,10 +52,27 @@ export  function RootLayout() {
 		);
 
 	return (
+		<RecoilRoot>
+
+			<View style={styles.container}>
+
+			
 		<Stack>
-			<Stack.Screen name="index" options={{ title: 'Login' }} />
-      <Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
+			<Stack.Screen name="index"  options={{ title: 'Login' }} />
+			<Stack.Screen name="signup" options={{ title: 'Sign Up' }} />
 			<Stack.Screen name="(auth)" options={{ headerShown: false }} />
+			<Stack.Screen name="profilesettings" options={{ title: 'Profile Settings' }} />	
+			<Stack.Screen name="(modal)" options={{ presentation: 'modal',headerShown:false }} />
 		</Stack>
+		</View>
+		</RecoilRoot>
 	);
 }
+
+
+const styles = StyleSheet.create({
+	container: {
+	  flex: 1,
+	  backgroundColor: 'red',  // Ensure the background color is white for the entire screen
+	},
+  });

@@ -1,164 +1,165 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
-import firestore from '@react-native-firebase/firestore';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { getApp } from '@react-native-firebase/app';
 import { getAuth } from '@react-native-firebase/auth';
-import * as Contacts from 'expo-contacts';
-import { addDoc, collection, serverTimestamp } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+import { Ionicons } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
 
-const Groups: React.FC = () => {
-	const [groupName, setGroupName] = useState('');
-	const [contacts, setContacts] = useState<{ id: number, name: string; email: string; number: string }[]>([]);
-	const [selectedContacts, setSelectedContacts] = useState<{ id: number, name: string; email: string; number: string }[]>([]);
-	const [loading, setLoading] = useState(false);
-	const [searchQuery, setSearchQuery] = useState('');
-	const [creating, setCreating] = useState(false);
-	const app = getApp();
-	const auth = getAuth(app);
+const Page = () => {
+	const auth = getAuth(getApp());
+	const user = auth.currentUser;
+	const router = useRouter();
+
+	const [groups, setGroups] = useState<any[]>([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		const fetchContacts = async () => {
-			const { status } = await Contacts.requestPermissionsAsync();
-			if (status === 'granted') {
-				const { data } = await Contacts.getContactsAsync({
-					pageOffset: 0,
-					pageSize: 200,
-					fields: [Contacts.Fields.Emails, Contacts.Fields.Name, Contacts.Fields.PhoneNumbers],
-				});
-				if (data.length > 0) {
-					const contactsData = data
-						.filter(contact => contact.emails && contact.emails.length > 0)
-						.map(contact => ({
-							id: Number(contact.id),
-							name: contact.name,
-							email: contact.emails && contact.emails[0] ? contact.emails[0].email || '' : '',
-							number: contact.phoneNumbers && contact.phoneNumbers[0] ? contact.phoneNumbers[0].number || '' : ''
-						}));
+		if (!user) return;
 
-					setContacts(contactsData);
-					setLoading(false);
-				}
-			} else {
-				alert('Permission to access contacts was denied');
-			}
-		};
+		const unsubscribe = firestore()
+			.collection('groups')
+			.where('members', 'array-contains', user.uid)
+			.onSnapshot(snapshot => {
+				const userGroups = snapshot.docs.map(doc => ({
+					id: doc.id,
+					...doc.data()
+				}));
+				setGroups(userGroups);
+				setLoading(false);
+			}, error => {
+				console.error("Error fetching groups:", error);
+				setLoading(false);
+			});
 
-		fetchContacts();
-	}, []);
-
-	const toggleContactSelection = (email: string) => {
-		if (selectedContacts.includes(email)) {
-			setSelectedContacts(selectedContacts.filter(contact => contact.email !== email));
-		} else {
-			setSelectedContacts([...selectedContacts, contact]);
-		}
-	};
-
-	const createGroup = async () => {
-		if (!groupName || selectedContacts.length === 0) {
-			alert('Please enter a group name and add at least one member.');
-			return;
-		}
-		setCreating(true);
-		try {
-			const groupRef = collection(firestore(getApp()),'groups');
-            await addDoc(groupRef, {
-                name: groupName,
-                members: selectedContacts,
-                createdBy: auth.currentUser?.email,
-                createdAt: serverTimestamp(),
-            }
-            )
-			alert('Group created successfully!');
-			setGroupName('');
-			setSelectedContacts([]);
-		} catch (error) {
-			alert('Failed to create group: ' + (error as any).message);
-		} finally {
-			setCreating(false);
-		}
-	};
-
-	const filteredContacts = contacts.filter(contact =>
-		contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-		contact.email.toLowerCase().includes(searchQuery.toLowerCase())
-	);
+		return () => unsubscribe();
+	}, [user]);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Create Group</Text>
-			<TextInput
-				style={styles.input}
-				value={groupName}
-				onChangeText={setGroupName}
-				placeholder="Group Name"
-				placeholderTextColor="#aaa"
-			/>
-			<TextInput
-				style={styles.input}
-				value={searchQuery}
-				onChangeText={setSearchQuery}
-				placeholder="Search Contacts"
-				placeholderTextColor="#aaa"
-			/>
-			{loading ? <ActivityIndicator size="large" color="#0000ff" animating={loading} />
-				: <FlatList
-					data={filteredContacts}
-					keyExtractor={(item) => item.id.toString()}
-					renderItem={({ item }) => (
-						<TouchableOpacity onPress={() => toggleContactSelection(item.email)} style={styles.contactItem}>
-							<Text>{item.name} ({item.email})</Text>
-							<Text>{item.number}</Text>
-							<CheckBox
-								value={selectedContacts.includes(item.email)}
-								onValueChange={() => toggleContactSelection(item.email)}
-							/>
-						</TouchableOpacity>
-					)}
-				/>}
-			<Button title={creating ? 'Creating...' : 'Create Group'} onPress={createGroup} disabled={loading} />
-		</View>
+		<ScrollView style={styles.container}>
+			{/* Header */}
+			<View style={styles.header}>
+				<Ionicons name="search" size={24} color="gray" />
+				<Link href="/creategroup">
+					<Text style={styles.createGroup}>Create group</Text>
+				</Link>
+			</View>
+
+			{/* Overall summary */}
+			<View style={styles.summary}>
+				<Text style={styles.owedText}>
+					Overall, you are owed <Text style={styles.owedAmount}>${0}</Text>
+				</Text>
+				<Ionicons name="filter" size={20} color="gray" />
+			</View>
+
+			{/* Group Cards */}
+			{loading ? (
+				<ActivityIndicator size="large" color="#009688" />
+			) : (
+				groups.map((group) => (
+					<TouchableOpacity
+						key={group.id}
+						style={styles.card}
+						onPress={() => router.push(`/group/${group.id}`)}
+					>
+						<View style={[styles.iconContainer, { backgroundColor: '#009688' }]}>
+							<Ionicons name="people" size={20} color="#fff" />
+						</View>
+						<View style={styles.cardDetails}>
+							<Text style={styles.groupName}>{group.name}</Text>
+							<Text style={styles.personText}>
+								{group.members?.length || 0} members
+							</Text>
+						</View>
+						<Text style={styles.youAreOwed}>
+							you are owed{'\n'}
+							<Text style={styles.amount}>$0.00</Text>
+						</Text>
+					</TouchableOpacity>
+				))
+			)}
+
+			{/* Settled Group (placeholder) */}
+			<TouchableOpacity style={styles.settledButton} onPress={() => router.push('/add')}>
+				<Text style={styles.settledText}>Show 1 settled-up group</Text>
+			</TouchableOpacity>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		padding: 20,
-		backgroundColor: '#f5f5f5',
-	},
-	title: {
-		fontSize: 32,
-		fontWeight: 'bold',
-		textAlign: 'center',
-		marginBottom: 20,
-		color: '#333',
-	},
-	input: {
-		marginVertical: 10,
-		height: 50,
-		borderWidth: 1,
-		borderRadius: 8,
-		padding: 10,
+		padding: 15,
 		backgroundColor: '#fff',
-		borderColor: '#ddd',
 	},
-	member: {
-		padding: 10,
-		backgroundColor: '#e0e0e0',
-		borderRadius: 8,
-		marginVertical: 5,
-	},
-	contactItem: {
+	header: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'center',
+	},
+	createGroup: {
+		color: '#00897B',
+		fontWeight: '500',
+	},
+	summary: {
+		marginVertical: 15,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+	},
+	owedText: {
+		fontSize: 16,
+	},
+	owedAmount: {
+		color: '#2e7d32',
+		fontWeight: '600',
+	},
+	card: {
+		flexDirection: 'row',
+		backgroundColor: '#f3f3f3',
+		borderRadius: 10,
 		padding: 10,
-		backgroundColor: '#e0e0e0',
-		borderRadius: 8,
-		marginVertical: 5,
+		alignItems: 'center',
+		marginBottom: 10,
+	},
+	iconContainer: {
+		padding: 10,
+		borderRadius: 10,
+		marginRight: 10,
+	},
+	cardDetails: {
+		flex: 1,
+	},
+	groupName: {
+		fontWeight: '600',
+		fontSize: 16,
+	},
+	personText: {
+		fontSize: 14,
+		color: '#444',
+	},
+	youAreOwed: {
+		textAlign: 'right',
+		fontSize: 12,
+		color: '#388e3c',
+	},
+	amount: {
+		fontWeight: '600',
+		fontSize: 14,
+		color: '#2e7d32',
+	},
+	settledButton: {
+		marginTop: 20,
+		borderColor: '#aaa',
+		borderWidth: 1,
+		padding: 10,
+		borderRadius: 10,
+		alignItems: 'center',
+	},
+	settledText: {
+		color: '#00796B',
+		fontWeight: '500',
 	},
 });
 
-export default Groups;
+export default Page;
