@@ -3,11 +3,11 @@ name: Run Tests with Server
 on:
   push:
     branches:
-      - main
-      - dev
+      - "**"
+      - "**"
   pull_request:
     branches:
-      - main
+      - "**"
 
 jobs:
   test:
