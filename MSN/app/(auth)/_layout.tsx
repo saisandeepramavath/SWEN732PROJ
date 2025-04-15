@@ -5,6 +5,7 @@ import { getAuth } from '@react-native-firebase/auth';
 import { getApp } from '@react-native-firebase/app';
 import { useEffect } from 'react';
 import { useNavigationState } from '@react-navigation/native';
+import React from 'react';
 
 const Layout = () => {
 	const router = useRouter();

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { View, Text, TextInput, Button, ActivityIndicator, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
+import { ActivityIndicator, Text, TextInput, Button, Card } from 'react-native-paper';
 
 const ProfileSettings: React.FC = () => {
     const user = auth().currentUser;
     const [userData, setUserData] = useState<any>(null);
-    const [loading, setLoading] = useState(true); // Ensure loading is initialized to true
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -22,10 +23,10 @@ const ProfileSettings: React.FC = () => {
                 } catch (err) {
                     setError('Failed to fetch user data');
                 } finally {
-                    setLoading(false); // Ensure loading is set to false after fetching
+                    setLoading(false);
                 }
             } else {
-                setLoading(false); // Handle case where user is not authenticated
+                setLoading(false);
             }
         };
 
@@ -36,6 +37,9 @@ const ProfileSettings: React.FC = () => {
         if (user) {
             try {
                 await firestore().collection('users').doc(user.uid).update(userData);
+                await user.updateProfile({
+                    displayName: userData?.name,
+                });
                 Alert.alert('Profile updated successfully');
             } catch (err) {
                 setError('Failed to update profile');
@@ -52,42 +56,81 @@ const ProfileSettings: React.FC = () => {
 
     if (loading) {
         return (
-            <ActivityIndicator
-                testID="loading-indicator" // Ensure testID is correctly set
-                size="large"
-                color="#0000ff"
-            />
+            <View style={styles.centered}>
+                <ActivityIndicator testID="loading-indicator" size="large" />
+            </View>
         );
     }
 
     if (error) {
         return (
-            <View>
-                <Text testID="error-message">{error}</Text>
+            <View style={styles.centered}>
+                <Text testID="error-message" style={styles.errorText}>
+                    {error}
+                </Text>
             </View>
         );
     }
 
     return (
-        <View>
-            <Text>Profile Settings</Text>
-            <View>
-                <Text>Name:</Text>
-                <TextInput
-                    value={userData?.name || ''}
-                    onChangeText={(text) => handleChange('name', text)}
-                />
-            </View>
-            <View>
-                <Text>Email:</Text>
-                <TextInput
-                    value={userData?.email || ''}
-                    onChangeText={(text) => handleChange('email', text)}
-                />
-            </View>
-            <Button title="Update Profile" onPress={handleUpdate} />
+        <View style={styles.container}>
+            <Card style={styles.card}>
+                <Card.Title title="Profile Settings" />
+                <Card.Content>
+                    <TextInput
+                        label="Full Name"
+                        value={userData?.fullName || ''}
+                        onChangeText={(text) => handleChange('fullName', text)}
+                        style={styles.input}
+                        mode="outlined"
+                    />
+                    <TextInput
+                        label="Email"
+                        value={userData?.email || ''}
+                        onChangeText={(text) => handleChange('email', text)}
+                        style={styles.input}
+                        mode="outlined"
+                        disabled // Email is typically not editable
+                    />
+                    <Button
+                        mode="contained"
+                        onPress={handleUpdate}
+                        style={styles.button}
+                    >
+                        Update Profile
+                    </Button>
+                </Card.Content>
+            </Card>
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 16,
+        backgroundColor: '#f5f5f5',
+    },
+    card: {
+        padding: 16,
+    },
+    input: {
+        marginBottom: 16,
+    },
+    button: {
+        marginTop: 16,
+        backgroundColor: '#00796B',
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    errorText: {
+        color: 'red',
+        fontSize: 16,
+    },
+});
 
 export default ProfileSettings;

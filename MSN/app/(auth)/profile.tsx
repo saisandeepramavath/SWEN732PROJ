@@ -39,7 +39,7 @@ const router = useRouter();
       {/* Header */}
       <Text style={styles.title}>Account</Text>
 
-      <View style={styles.profileContainer}>
+      <TouchableOpacity style={styles.profileContainer} onPress={() => router.push('/profilesettings')}>
         <View style={styles.profileIconWrapper}>
           <View style={styles.profileIcon} />
           <Ionicons name="camera" size={16} color="#333" style={styles.cameraIcon} />
@@ -49,7 +49,7 @@ const router = useRouter();
           <Text style={styles.userEmail}>{user?.email}</Text>
         </View>
         <Ionicons name="chevron-forward" size={20} color="#ccc" />
-      </View>
+      </TouchableOpacity>
 
       {/* Menu Items */}
       <View style={styles.section}>

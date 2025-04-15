@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import {
 	Text,
@@ -24,6 +25,7 @@ export default function Index() {
 		setLoading(true);
 		try {
 			await auth().signInWithEmailAndPassword(email, password);
+			router.push('/(auth)/friends');
 		} catch (e: any) {
 			
 		} finally {

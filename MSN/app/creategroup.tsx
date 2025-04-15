@@ -12,6 +12,7 @@ const Groups: React.FC = () => {
   const [groupName, setGroupName] = useState('');
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // New state for error messages
   const auth = getAuth(getApp());
   const router = useRouter();
 
@@ -31,7 +32,7 @@ const Groups: React.FC = () => {
 
   const handleCreateGroup = async () => {
     if (!groupName || !selectedType) {
-      alert('Please enter group name and select a type.');
+      setErrorMessage('Please enter group name and select a type.'); // Set error message
       return;
     }
 
@@ -53,10 +54,11 @@ const Groups: React.FC = () => {
         [auth.currentUser?.uid || '']
       );
 
+      setErrorMessage(null); // Clear error message on success
       alert('Group created!');
       router.back(); // or navigate wherever you need
     } catch (error: any) {
-      alert('Error creating group: ' + error.message);
+      setErrorMessage('Error creating group: ' + error.message); // Set error message on failure
     }
   };
 
@@ -72,6 +74,13 @@ const Groups: React.FC = () => {
           <Text style={styles.headerAction}>Done</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Error Message */}
+      {errorMessage && (
+        <Text testID="error-message" style={styles.errorText}>
+          {errorMessage}
+        </Text>
+      )}
 
       {/* Group Image Picker */}
 	  <View style={{display:'flex',alignItems:'center', flexDirection:'row',paddingRight:100}}>
@@ -100,6 +109,7 @@ const Groups: React.FC = () => {
         {groupTypes.map((type) => (
           <TouchableOpacity
             key={type.name}
+            testID={`type-button-${type.name}`} // Add testID for each type
             style={[
               styles.typeButton,
               selectedType === type.name && styles.typeSelected
@@ -191,6 +201,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 13,
     color: '#333',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 10,
   },
 });
 
