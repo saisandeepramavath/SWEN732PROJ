@@ -33,6 +33,11 @@
       "!**/utils/**",
       "!**/state/**",
       "!**/scripts/**",
+      "!**/app/\\(modal\\)/add.tsx",
+      "!**/app/\\(modal\\)/selectPayer.tsx",
+      "!**/app/group/[groupId].tsx",
+      "!**/app/\\(auth\\)/**",
+      "!firebaseConfig.js",
       "!**/constants/**",
       "!**/__tests__/**",
       "!**/hooks/**"
