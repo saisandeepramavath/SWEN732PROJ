@@ -1,0 +1,24 @@
+[
+    {
+        "amountOwed": "1290.00",
+        "id": {
+            "createdAt": "2025-04-18T01:44:40.684Z",
+            "currency": "",
+            "email": "jatin1@gmail.com",
+            "fullName": "Jatin",
+            "id": "VqhNKyfjPAOS7Ud73YTdRUwQ5SH3",
+            "name": "Jatin",
+            "notificationPreferences": [Array
+            ],
+            "phoneNumber": "8885450415"
+        },
+        "name": "Unknown",
+        "paid": false
+    },
+    {
+        "amountOwed": "1290.00",
+        "id": "7xuioLZEOdflfIGWwo4xZPH6N1h1",
+        "name": "You",
+        "paid": true
+    }
+]

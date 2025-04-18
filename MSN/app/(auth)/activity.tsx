@@ -91,9 +91,9 @@ const ActivityScreen = () => {
   return (
     <ScrollView style={styles.container}>
       {/* Search + Heading */}
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <Ionicons name="search" size={24} color="gray" />
-      </View>
+      </View> */}
       <Text style={styles.title}>Recent activity</Text>
 
       {loading ? (

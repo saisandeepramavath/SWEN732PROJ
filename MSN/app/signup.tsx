@@ -37,6 +37,10 @@ const Signup: React.FC = () => {
 				fullName,
 				email,
 				phoneNumber,
+				createdAt: new Date().toISOString(),
+				currency: "",
+				name: fullName,
+				notificationPreferences: [],
 			});
 			router.push('/')
 			console.log('✅ Firestore Write Success');

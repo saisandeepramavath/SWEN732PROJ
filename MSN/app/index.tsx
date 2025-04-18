@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	Text,
 	View,
@@ -21,11 +21,22 @@ export default function Index() {
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 
+	useEffect(() => {
+		const unsubscribe = auth().onAuthStateChanged(user => {
+			if (user) {
+				router.push('/(auth)/groups');
+			}
+		});
+
+		return () => unsubscribe();
+	}
+	, []);
+	
 	const signIn = async () => {
 		setLoading(true);
 		try {
 			await auth().signInWithEmailAndPassword(email, password);
-			router.push('/(auth)/friends');
+			router.push('/(auth)/groups');
 		} catch (e: any) {
 			
 		} finally {

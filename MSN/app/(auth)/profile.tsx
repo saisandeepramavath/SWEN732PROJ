@@ -24,16 +24,16 @@ const ProfileScreen = () => {
   }, []);
 const router = useRouter();
   const menuItems = [
-    { icon: <MaterialIcons name="qr-code" size={20} />, label: 'Scan code' },
+    // { icon: <MaterialIcons name="qr-code" size={20} />, label: 'Scan code' },
     { label: 'Notifications' },
-    { label: 'Security' },
+    {label: 'Currency'},
   ];
 
   return (
     <ScrollView style={styles.container}>
       {/* Search */}
       <View style={styles.searchHeader}>
-        <Ionicons name="search" size={24} color="gray" />
+        {/* <Ionicons name="search" size={24} color="gray" /> */}
       </View>
 
       {/* Header */}

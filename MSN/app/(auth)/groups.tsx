@@ -38,8 +38,8 @@ const Page = () => {
 	return (
 		<ScrollView style={styles.container}>
 			{/* Header */}
-			<View style={styles.header}>
-				<Ionicons name="search" size={24} color="gray" />
+			<View style={[styles.header, { alignSelf: 'flex-end' }]}>
+				{/* <Ionicons name="search" size={24} color="gray" /> */}
 				<Link href="/creategroup">
 					<Text style={styles.createGroup}>Create group</Text>
 				</Link>
@@ -50,7 +50,7 @@ const Page = () => {
 				<Text style={styles.owedText}>
 					Overall, you are owed <Text style={styles.owedAmount}>${0}</Text>
 				</Text>
-				<Ionicons name="filter" size={20} color="gray" />
+				{/* <Ionicons name="filter" size={20} color="gray" /> */}
 			</View>
 
 			{/* Group Cards */}
@@ -81,9 +81,9 @@ const Page = () => {
 			)}
 
 			{/* Settled Group (placeholder) */}
-			<TouchableOpacity style={styles.settledButton} onPress={() => router.push('/add')}>
+			{/* <TouchableOpacity style={styles.settledButton} onPress={() => router.push('/add')}>
 				<Text style={styles.settledText}>Show 1 settled-up group</Text>
-			</TouchableOpacity>
+			</TouchableOpacity> */}
 		</ScrollView>
 	);
 };

@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
 const SelectPayer = () => {
   const router = useRouter();
-  const [members] = useState([
-    { id: '1', name: 'Sai Sandeep' },
-    { id: '2', name: 'Nithikesh R' },
-    { id: '3', name: 'Jatin J' },
-    { id: '4', name: 'Mohammed A' },
-  ]);
+  const { members } = useLocalSearchParams();
+  const parsedMembers = typeof members === 'string' ? JSON.parse(members) : [];
+
+  const [memberList] = useState(parsedMembers);
 
   const handleSelect = (payer: any) => {
     console.log('Selected payer:', payer);
