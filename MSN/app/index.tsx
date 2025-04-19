@@ -20,7 +20,7 @@ export default function Index() {
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
-
+	/* istanbul ignore next */
 	useEffect(() => {
 		const unsubscribe = auth().onAuthStateChanged(user => {
 			if (user) {

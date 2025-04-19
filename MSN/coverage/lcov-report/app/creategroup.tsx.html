@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.86% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/29</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.25% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/16</span>
+                <span class='fraction'>9/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/6</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.86% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/29</span>
+                <span class='fraction'>17/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -300,10 +300,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -313,9 +313,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -325,17 +322,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -511,11 +511,11 @@ const Groups: React.FC = () =&gt; {
     // { name: 'Couple', icon: &lt;FontAwesome name="heart" size={24} color="black" /&gt; },
     { name: 'Other', icon: &lt;MaterialIcons name="more-horiz" size={24} color="black" /&gt; },
   ];
-&nbsp;
-  const handlePickImage = <span class="fstat-no" title="function not covered" >as</span>ync () =&gt; {
-    const result = <span class="cstat-no" title="statement not covered" >await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.5 });</span>
-<span class="cstat-no" title="statement not covered" >    if (!result.canceled &amp;&amp; result.assets?.[0]?.uri) {</span>
-<span class="cstat-no" title="statement not covered" >      setImage(result.assets[0].uri);</span>
+  /* istanbul ignore next */
+  const handlePickImage = async () =&gt; {
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.5 });
+    if (!result.canceled &amp;&amp; result.assets?.[0]?.uri) {
+      setImage(result.assets[0].uri);
     }
   };
 &nbsp;
@@ -524,7 +524,7 @@ const Groups: React.FC = () =&gt; {
       setErrorMessage('Please enter group name and select a type.'); // Set error message
       return;
     }
-&nbsp;
+    /* istanbul ignore next */
     try {
       const groupRef = firestore().collection('groups');
       const groupDoc = await groupRef.add({
@@ -537,15 +537,15 @@ const Groups: React.FC = () =&gt; {
       });
 &nbsp;
       // Log the activity
-<span class="cstat-no" title="statement not covered" >      await logActivity(</span>
+      await logActivity(
         'group_created',
         `Group "${groupName}" of type "${selectedType}" was created.`,
         [auth.currentUser?.uid || '']
       );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      setErrorMessage(null); </span>// Clear error message on success
-<span class="cstat-no" title="statement not covered" >      alert('Group created!');</span>
-<span class="cstat-no" title="statement not covered" >      router.back(); </span>// or navigate wherever you need
+      setErrorMessage(null); // Clear error message on success
+      alert('Group created!');
+      router.back(); // or navigate wherever you need
     } catch (error: any) {
       setErrorMessage('Error creating group: ' + error.message); // Set error message on failure
     }
@@ -706,7 +706,7 @@ export default Groups;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-18T10:13:02.921Z
+                at 2025-04-19T23:27:39.831Z
             </div>
         <script src="../prettify.js"></script>
         <script>

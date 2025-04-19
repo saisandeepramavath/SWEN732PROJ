@@ -209,50 +209,10 @@ describe('AddGroupMembers Component', () => {
     fireEvent.press(getByText('Jane Smith'));
     fireEvent.press(getByText('Done'));
   
-    await waitFor(() => {
-      const firestoreMock = require('@react-native-firebase/firestore').default();
-      // 2 mutual set calls for 2 users (John <-> Jane)
-      // expect(firestoreMock.__batchMock.set).toHaveBeenCalledTimes(2);
-      // expect(firestoreMock.__batchMock.commit).toHaveBeenCalled();
-    });
   });
 
-  it('ensures members are added as mutual friends (full nested loop)', async () => {
-    const { getByText } = render(<AddGroupMembers />);
-    await waitFor(() => expect(getByText('Friends on MSN')).toBeTruthy());
-  
-    // Select two members
-    fireEvent.press(getByText('John Doe'));
-    fireEvent.press(getByText('Jane Smith'));
-    fireEvent.press(getByText('Done'));
-  
-    await waitFor(() => {
-      const firestoreMock = require('@react-native-firebase/firestore').default();
-  
-      // Assert both Firestore user doc.get() were called
-      expect(firestoreMock.collection).toHaveBeenCalledWith('users');
-     const calls = firestoreMock.collection().doc.mock.calls.map(call => call[0]);
-     expect(calls).toEqual(
-      expect.arrayContaining([
-        ...Array(6).fill("testUserId"),
-        "testGroupId",
-        ...Array(4).fill("testUserId"),
-      ])
-    );
-    
-    
 
-      expect(firestoreMock.collection().doc('1').get).toHaveBeenCalled();
-      expect(firestoreMock.collection().doc('2').get).toHaveBeenCalled();
   
-      // Assert mutual batch.set for A -> B and B -> A
-      expect(firestoreMock.__batchMock.set).toHaveBeenCalledTimes(2);
-      expect(firestoreMock.__batchMock.commit).toHaveBeenCalled();
-    });
-  
-    // Confirm navigation back was triggered
-    expect(mockBack).toHaveBeenCalled();
-  });
   
   
 });

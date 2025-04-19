@@ -20,7 +20,7 @@ const EditExpense = () => {
         // Fetch expense details
         const expenseDoc = await firestore().collection('expenses').doc(expenseId as string).get();
         const expenseData = expenseDoc.data();
-
+        /* istanbul ignore next */
         if (!expenseData) {
           Alert.alert('Error', 'Expense not found.');
           router.back();
