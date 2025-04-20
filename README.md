@@ -86,6 +86,7 @@ yarn install
 ### 3. Configure Firebase
 Create a firebaseConfig.js file in /MSN:
 
+```
 export const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -94,7 +95,7 @@ export const firebaseConfig = {
   messagingSenderId: "SENDER_ID",
   appId: "APP_ID"
 };
-
+```
 ### 4 Start
 
 ```node
