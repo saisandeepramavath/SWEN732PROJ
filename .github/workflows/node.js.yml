@@ -33,7 +33,7 @@ jobs:
         working-directory: MSN
 
       - name: Wait for Server to Start
-        run: sleep 10  # Adjust port if needed
+        run: sleep 10
 
       - name: Build
         run: npm run build --if-present
@@ -46,3 +46,10 @@ jobs:
       - name: Run Tests
         run: npm run test -- --coverage=true
         working-directory: MSN
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: saisandeepramavath/SWEN732PROJ
+          files: MSN/coverage/lcov.info
