@@ -7,7 +7,7 @@
   * Sai Sandeep Ramavath
   * Mallikarjuna Tupakula
   * Nithikesh Reddy Bobilli
-  * MEMBER4
+
 
 ## Executive Summary
 
