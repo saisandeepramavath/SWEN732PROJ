@@ -3,17 +3,18 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
-    "test": "jest --coverage=true",
-    "testDebug": "jest -o --watch --coverage=false",
-    "testFinal": "jest",
-    "updateSnapshots": "jest -u --coverage=false",
-    "lint": "expo lint"
-  },
+  "start": "expo start",
+  "reset-project": "node ./scripts/reset-project.js",
+  "android": "expo run:android",
+  "ios": "expo run:ios",
+  "web": "expo start --web",
+  "test": "jest --coverage",
+  "testFinal": "jest",
+  "lint": "expo lint",
+  "coverage": "jest --coverage",
+  "sonar": "npm run coverage && sonar-scanner"
+}
+,
   "jest": {
     "preset": "jest-expo",
     "collectCoverage": true,
@@ -95,6 +96,7 @@
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
     "recoil": "^0.7.7",
+    "sonar-scanner": "^3.1.0",
     "victory-native": "^41.17.1",
     "xlsx": "^0.18.5"
   },
