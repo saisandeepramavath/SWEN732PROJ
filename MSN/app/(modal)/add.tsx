@@ -10,10 +10,11 @@ import {
   ScrollView,
   Dimensions,
   FlatList,
-  Alert
+  Alert,
+  Modal
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import firestore from '@react-native-firebase/firestore';
 import { getAuth } from '@react-native-firebase/auth';
 // Removed unused import
@@ -22,13 +23,35 @@ import { getAuth } from '@react-native-firebase/auth';
 const AddExpense = () => {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
+  const [splits, setSplits] = useState<{ id: string; name: string; value: string }[]>([]); // State to store updated splits
   const router = useRouter();
+  const { groupId, updatedSplits, savedDescription, savedAmount, members } = useLocalSearchParams(); // Retrieve updated splits, description, and amount from params
   const [search, setSearch] = useState('');
   const [friends, setFriends] = useState<{ id: string; name: string }[]>([]);
-  const [selected, setSelected] = useState<string[]>([]);
-  const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
+  const [selected, setSelected] = useState<any[]>([]);
+  const [users,setUsers] = useState<{ id: string; name: string }[]>([]); // State to store selected users
   const auth = getAuth();
   const user = auth.currentUser;
+  const [splitModalVisible, setSplitModalVisible] = useState(false); // State to control the split popup
+  const [splitType, setSplitType] = useState<'equal' | 'ratio' | 'custom'>('equal'); // State for split type
+  const [customSplits, setCustomSplits] = useState<{ id: string; amount: string }[]>([]); // State for custom splits
+
+  useEffect(() => {
+    if (updatedSplits) {
+      setSplits(JSON.parse(typeof updatedSplits === 'string' ? updatedSplits : '[]')); // Update splits if passed from SplitOptions
+    }
+    if (savedDescription !== undefined) {
+      setDescription(typeof savedDescription === 'string' ? savedDescription : ''); // Restore description
+    }
+    if (savedAmount !== undefined) {
+      setAmount(typeof savedAmount === 'string' ? savedAmount : ''); // Ensure savedAmount is a string
+    }
+    if(members) {
+      setUsers(typeof members === 'string' ? JSON.parse(members) : []); // Restore members
+      setSelected(typeof members === 'string' ? JSON.parse(members) : []); // Ensure selected is an array
+      console.log(members)
+    }
+  }, [updatedSplits, savedDescription, savedAmount]);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -42,7 +65,7 @@ const AddExpense = () => {
         const friendsSnapshot = await firestore()
           .collection('users')
           .doc(userId)
-          .collection('friends')
+          .collection('friends') 
           .get();
 
         const friendsData = friendsSnapshot.docs.map((doc) => ({
@@ -51,6 +74,17 @@ const AddExpense = () => {
         }));
 
         setFriends(friendsData);
+
+        // Initialize splits with friends if not already set
+        if (splits.length === 0) {
+          setSplits(
+            friendsData.map((friend) => ({
+              id: friend.id,
+              name: friend.name,
+              value: '',
+            }))
+          );
+        }
       } catch (error) {
         console.error('Error fetching friends:', error);
         Alert.alert('Error', 'Failed to fetch friends.');
@@ -58,13 +92,13 @@ const AddExpense = () => {
     };
 
     fetchFriends();
-  }, []);
+  }, [user]);
 
   const toggleSelect = (item: any) => {
     setUsers([...users, item]);   
-    setSelected([...selected, item.id]);   
+    setSelected([...selected, item]);   
     setSearch('');
-    setUsers([])
+    // setUsers([])
   };
 
   const handleSearch = (text: string) => {
@@ -76,18 +110,44 @@ const AddExpense = () => {
   };
 
   const handleSave = async () => {
-    if (!description || !amount) {
-      Alert.alert('Missing Fields', 'Please enter both description and amount.');
+    if (!description || !amount || selected.length === 0) {
+      Alert.alert('Missing Fields', 'Please enter description, amount, and select at least one participant.');
       return;
     }
-
+  
     try {
+      // Calculate the amount owed by each participant
+      const totalParticipants = selected.length + 1; // Include the current user
+      const splitAmount = parseFloat(amount) / totalParticipants;
+      const members = selected.map((mem) => ({
+        id: mem.id,
+        name: friends.find((friend) => friend.id === mem.id)?.name || 'Unknown', // Ensure 'name' is always present
+        amountOwed: splitAmount.toFixed(2), // Ensure consistent decimal places
+        paid: false, // Default to not paid
+      }));
+      selected.map(id=>console.log(id,"ESLES"))
+      // Add the current user as a participant
+      const currentUserDoc = await firestore().collection('users').doc(user?.uid).get();
+      const currentUserName = currentUserDoc.exists ? currentUserDoc.data()?.fullName || 'You' : 'You';
+
+      members.push({
+        id: user?.uid || 'unknown',
+        name: currentUserName, // Use the name fetched from Firestore or fallback to 'You'
+        amountOwed: splitAmount.toFixed(2),
+        paid: true, // Mark the current user as paid
+      });
+      console.log(members)
+      // Save the expense to the root "expenses" collection
       await firestore().collection('expenses').add({
         description,
         amount: parseFloat(amount),
-        participants: selected,
-        createdAt: firestore.FieldValue.serverTimestamp(),
+        splitType: splitType,
+        groupId, // Include the group ID
+        members, // List of members with amounts owed and paid status
+        whoOwed: user?.uid || 'unknown', // The user who paid
+        createdAt: firestore.Timestamp.fromDate(new Date()), // Set to the current date and time
       });
+  
       Alert.alert('Success', 'Expense added successfully.');
       setDescription('');
       setAmount('');
@@ -97,6 +157,30 @@ const AddExpense = () => {
       console.error('Error adding expense:', error);
       Alert.alert('Error', 'Failed to add expense.');
     }
+  };
+
+  const handleSplitOption = (type: 'equal' | 'ratio' | 'custom') => {
+    setSplitType(type);
+    setSplitModalVisible(false); // Close the modal after selecting an option
+  };
+
+  const handleCustomSplitChange = (id: string, amount: string) => {
+    setCustomSplits((prev) =>
+      prev.map((split) => (split.id === id ? { ...split, amount } : split))
+    );
+  };
+
+  const handleSplitNavigation = () => {
+    router.replace({
+      pathname: '/splitOptions',
+      params: {
+        groupId,
+        selectedMembers: JSON.stringify(splits.map((split) => ({ id: split.id, name: split.name }))), // Pass selected members
+        totalAmount: amount, // Pass the total amount
+        savedDescription: description, // Pass the description
+        savedAmount: amount, // Pass the amount
+      },
+    });
   };
 
   return (
@@ -119,15 +203,26 @@ const AddExpense = () => {
         {/* With whom */}
         <View style={styles.tagRow}>
           <Text style={styles.withText}>With you and:</Text>
-            {selected.map((id) => {
-            const friend = friends.find((f) => f.id === id);
-            return (
-              <TouchableOpacity key={id} style={styles.tag} onPress={() => setSelected(selected.filter((userId) => userId !== id))}>
+
+            {users.map((u) => (
+            <TouchableOpacity
+              key={u.id}
+              style={styles.tag}
+              onPress={() =>
+              {setSelected((prevUser) =>
+                prevUser.filter((item) => item.id !== u.id)
+              )
+              setUsers((prevUser) =>
+                prevUser.filter((item) => item.id !== u.id)
+              )}
+              }
+            >
+              <View style={{padding:"20px", display:"flex", flexDirection:"row", alignItems:"center"}}>
               <Ionicons name="person" size={16} color="#fff" />
-              <Text style={styles.tagText}>{friend?.name || 'Unknown'}</Text>
-              </TouchableOpacity>
-            );
-            })}
+              <Text style={styles.tagText}>{u.name}</Text>
+              </View>
+            </TouchableOpacity>
+            ))}
           <TextInput
             onChangeText={handleSearch}
             value={search}
@@ -205,7 +300,7 @@ const AddExpense = () => {
               and split{' '}
               <Text
                 style={[styles.bold, { color: '#00796B' }]}
-                onPress={() => router.push({ pathname: '/splitOptions' })}
+                onPress={handleSplitNavigation} // Navigate to the split options page
               >
                 equally
               </Text>
@@ -213,6 +308,44 @@ const AddExpense = () => {
           </View>
         )}
       </ScrollView>
+
+      {/* Split Modal */}
+      <Modal
+        visible={splitModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setSplitModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Split Options</Text>
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={() => handleSplitOption('equal')}
+            >
+              <Text style={styles.modalOptionText}>Split Equally</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={() => handleSplitOption('ratio')}
+            >
+              <Text style={styles.modalOptionText}>Split by Ratio</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalOption}
+              onPress={() => handleSplitOption('custom')}
+            >
+              <Text style={styles.modalOptionText}>Custom Amounts</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalClose}
+              onPress={() => setSplitModalVisible(false)}
+            >
+              <Text style={styles.modalCloseText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <View style={[search.length ? styles.hide : styles.bottomBar]}>
         <TouchableOpacity>
@@ -267,12 +400,13 @@ const styles = StyleSheet.create({
   tag: {
     flexDirection: 'row',
     backgroundColor: '#fb8c00',
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
+    
     paddingVertical: 4,
     borderRadius: 15,
-    marginLeft: 10,
+    // marginLeft: 10,
     alignItems: 'center',
-    marginRight: 10,
+    // marginRight: 10,
   },
   tagText: {
     color: '#fff',
@@ -347,6 +481,42 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 15,
     color: '#333',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 20,
+  },
+  modalOption: {
+    paddingVertical: 10,
+    width: '100%',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  modalOptionText: {
+    fontSize: 16,
+    color: '#00796B',
+  },
+  modalClose: {
+    marginTop: 20,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: '#ff5252',
   },
 });
 

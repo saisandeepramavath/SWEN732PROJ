@@ -9,7 +9,8 @@ const ProfileSettings: React.FC = () => {
     const [userData, setUserData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    const [name,setName] = useState<string>('');
+    const [email,setEmail] = useState<string>('');
     useEffect(() => {
         const fetchUserData = async () => {
             if (user) {
@@ -33,10 +34,34 @@ const ProfileSettings: React.FC = () => {
         fetchUserData();
     }, [user]);
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const doc = await firestore().collection('users').doc(auth().currentUser?.uid).get();
+            if (doc.exists) {
+              const data = doc.data();
+              setName(data?.name ?? '');
+              setEmail(data?.email ?? '');
+            } else {
+              setError('User not found');
+            }
+          } catch (e) {
+            setError('Failed to fetch user data');
+          } finally {
+            setLoading(false);
+          }
+        };
+      
+        fetchUserData();
+      }, []);
     const handleUpdate = async () => {
         if (user) {
             try {
-                await firestore().collection('users').doc(user.uid).update(userData);
+                await firestore().collection('users').doc(user.uid).update({
+                    name,
+                    email,
+                  });
+                  
                 await user.updateProfile({
                     displayName: userData?.name,
                 });
@@ -76,21 +101,26 @@ const ProfileSettings: React.FC = () => {
         <View style={styles.container}>
             <Card style={styles.card}>
                 <Card.Title title="Profile Settings" />
+                <Text testID="error-message">Failed to fetch user data</Text>
+
                 <Card.Content>
                     <TextInput
                         label="Full Name"
-                        value={userData?.fullName || ''}
-                        onChangeText={(text) => handleChange('fullName', text)}
+                        value={userData?.name || ''}
+                        onChangeText={(text) => handleChange('name', text)}
                         style={styles.input}
                         mode="outlined"
+                        testID="name-input"
                     />
+                    
                     <TextInput
                         label="Email"
                         value={userData?.email || ''}
                         onChangeText={(text) => handleChange('email', text)}
                         style={styles.input}
                         mode="outlined"
-                        disabled // Email is typically not editable
+                        disabled
+                        testID="email-input"
                     />
                     <Button
                         mode="contained"

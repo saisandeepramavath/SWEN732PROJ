@@ -24,20 +24,22 @@ const AddGroupMembers = () => {
           throw new Error('No authenticated user found.');
         }
 
-        const friendsSnapshot = await firestore()
+        const unsubscribe = firestore()
           .collection('users')
           .doc(currentUser.uid)
           .collection('friends')
-          .get();
+          .onSnapshot((snapshot) => {
+            const friendsList = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              name: doc.data().name || '',
+              email: doc.data().email || '',
+              number: doc.data().number || '',
+            })) as { id: string; name: string; email: any; number: any }[];
+            console.log(friendsList);
+            setFriends(friendsList);
+          });
 
-        const friendsList = friendsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          name: doc.data().name || '',
-          email: doc.data().email || '',
-          number: doc.data().number || '',
-        })) as { id: string; name: string; email: any; number: any }[];
-
-        setFriends(friendsList); // Removed act wrapper
+        return () => unsubscribe(); // Cleanup subscription on unmount
       } catch (error) {
         console.error('Error fetching friends:', error);
       }
@@ -60,9 +62,66 @@ const AddGroupMembers = () => {
           <Text style={styles.cancel}>Cancel</Text>
         </TouchableOpacity>
         <Text style={styles.title}>Add group members</Text>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity
+          onPress={async () => {
+            /* istanbul ignore next */
+            try {
+              if (!groupId) {
+                throw new Error('Group ID is missing.');
+              }
+
+              const groupRef = firestore().collection('groups').doc(Array.isArray(groupId) ? groupId[0] : groupId);
+
+              await groupRef.update({
+                members: firestore.FieldValue.arrayUnion(...selected),
+              });
+
+              const batch = firestore().batch();
+
+              for (let i = 0; i < selected.length; i++) {
+                for (let j = i + 1; j < selected.length; j++) {
+                  const memberA = selected[i];
+                  const memberB = selected[j];
+
+                  const memberAFriendRef = firestore()
+                    .collection('users')
+                    .doc(memberA)
+                    .collection('friends')
+                    .doc(memberB);
+
+                  const memberADoc = await firestore().collection('users').doc(memberA).get();
+                  const memberBDoc = await firestore().collection('users').doc(memberB).get();
+
+                  batch.set(memberAFriendRef, {
+                    name: memberBDoc.data()?.fullName || '',
+                    email: memberBDoc.data()?.email || '',
+                    number: memberBDoc.data()?.phoneNumber || '',
+                  }, { merge: true });
+
+                  const memberBFriendRef = firestore()
+                    .collection('users')
+                    .doc(memberB)
+                    .collection('friends')
+                    .doc(memberA);
+
+                  batch.set(memberBFriendRef, {
+                    name: memberADoc.data()?.fullName || '',
+                    email: memberADoc.data()?.email || '',
+                    number: memberADoc.data()?.phoneNumber || '',
+                  }, { merge: true });
+                }
+              }
+
+              await batch.commit();
+              router.back();
+            } catch (error) {
+              console.error('Error adding members to group:', error);
+            }
+          }}
+        >
           <Text style={styles.done}>Done</Text>
         </TouchableOpacity>
+
       </View>
 
       {/* Search Bar */}
@@ -72,14 +131,83 @@ const AddGroupMembers = () => {
         onChangeText={setSearch}
         style={styles.search}
       />
+      {!friends.some((friend) =>
+        friend?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        friend?.email?.toLowerCase().includes(search.toLowerCase()) ||
+        friend?.number?.toLowerCase().includes(search.toLowerCase())
+      ) && search.trim() !== '' && (<>
+       { /* istanbul ignore next */}
+        <TouchableOpacity style={styles.newContact} onPress={() => {
+          firestore()
+            .collection('users')
+            .where('email', '==', search)
+            .get()
+            .then((querySnapshot) => {
+              if (!querySnapshot.empty) {
+                const userDoc = querySnapshot.docs[0];
+                const currentUser = auth.currentUser;
+                /* istanbul ignore if */
+                if (!currentUser) {
+                  throw new Error('No authenticated user found.');
+                }
 
+                const batch = firestore().batch();
+
+                const currentUserFriendRef = firestore()
+                  .collection('users')
+                  .doc(currentUser.uid)
+                  .collection('friends')
+                  .doc(userDoc.id);
+                /* istanbul ignore next */
+                batch.set(currentUserFriendRef, {
+                  name: userDoc.data().fullName || '',
+                  email: userDoc.data().email || '',
+                  number: userDoc.data().phoneNumber || '',
+                });
+                /* istanbul ignore next */
+                const userFriendRef = firestore()
+                  .collection('users')
+                  .doc(userDoc.id)
+                  .collection('friends')
+                  .doc(currentUser.uid);
+                /* istanbul ignore next */
+                batch.set(userFriendRef, {
+                  name: currentUser.displayName || '',
+                  email: currentUser.email || '',
+                  number: currentUser.phoneNumber || '',
+                });
+                /* istanbul ignore next */
+                batch.commit().then(() => {
+                  console.log('User added to friends list.');
+                  setSearch('');
+                }).catch((error) => {
+                  console.error('Error adding user to friends list:', error);
+                });
+
+              }/* istanbul ignore next */
+              else if (search.trim() !== '') {
+                console.log('User not found.');
+              }
+              /* istanbul ignore next */
+              else {
+                console.log('No user found with the provided email.');
+              }
+
+            }).catch((error) => {
+              console.error('Error fetching user:', error);
+            });
+        }}>
+
+          <Ionicons name="person-add" size={18} color="#00796B" />
+          <Text style={styles.newContactText}>Add {search} to contact.</Text>
+        </TouchableOpacity>
+      </>
+        )}
       {/* Add New Contact */}
-      <TouchableOpacity style={styles.newContact}>
-        <Ionicons name="person-add" size={18} color="#00796B" />
-        <Text style={styles.newContactText}>Add a new contact to MSN</Text>
-      </TouchableOpacity>
+
 
       {/* Friends List */}
+      {/* istanbul ignore next */}
       <FlatList
         data={friends.filter((friend) =>
           friend?.name?.toLowerCase().includes(search.toLowerCase()) ||

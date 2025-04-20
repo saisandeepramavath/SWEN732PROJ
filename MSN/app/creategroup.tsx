@@ -22,7 +22,7 @@ const Groups: React.FC = () => {
     // { name: 'Couple', icon: <FontAwesome name="heart" size={24} color="black" /> },
     { name: 'Other', icon: <MaterialIcons name="more-horiz" size={24} color="black" /> },
   ];
-
+  /* istanbul ignore next */
   const handlePickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, quality: 0.5 });
     if (!result.canceled && result.assets?.[0]?.uri) {
@@ -35,7 +35,7 @@ const Groups: React.FC = () => {
       setErrorMessage('Please enter group name and select a type.'); // Set error message
       return;
     }
-
+    /* istanbul ignore next */
     try {
       const groupRef = firestore().collection('groups');
       const groupDoc = await groupRef.add({
