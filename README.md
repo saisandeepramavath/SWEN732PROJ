@@ -1,5 +1,10 @@
 # MSN - Digital Bill Splitter & Expense Manager
-
+[![Expo](https://img.shields.io/badge/Expo-React%20Native-blue)](https://expo.dev/)
+[![Firebase Firestore](https://img.shields.io/badge/Firebase-Firestore-orange)](https://firebase.google.com/products/firestore/)
+[![Firebase Auth](https://img.shields.io/badge/Firebase-Auth-orange)](https://firebase.google.com/products/auth/)
+[![Firebase Storage](https://img.shields.io/badge/Firebase-Storage-orange)](https://firebase.google.com/products/storage/)
+[![Jest](https://img.shields.io/badge/Testing-Jest-green)](https://jestjs.io/)
+[![Victory](https://img.shields.io/badge/Charts-Victory-yellow)](https://formidable.com/open-source/victory/)
 [![Code Coverage](https://codecov.io/gh/saisandeepramavath/SWEN732PROJ/branch/main/graph/badge.svg)](https://codecov.io/gh/saisandeepramavath/SWEN732PROJ)
 [![SonarCloud](https://sonarcloud.io/api/project_badges/measure?project=saisandeepramavath_SWEN732PROJ&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=saisandeepramavath_SWEN732PROJ)
 

@@ -153,6 +153,7 @@ const AddExpense = () => {
       setAmount('');
       setSelected([]);
       setSearch('');
+      // router.push('/group/{', { groupId }); // Navigate back to the group page
     } catch (error) {
       console.error('Error adding expense:', error);
       Alert.alert('Error', 'Failed to add expense.');
