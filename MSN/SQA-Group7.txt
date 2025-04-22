@@ -1,0 +1,4 @@
+1. https://github.com/saisandeepramavath/SWEN732PROJ/blob/main/README.md
+2. https://sonarcloud.io/project/overview?id=saisandeepramavath_SWEN732PROJ
+3. From this task, I have gained how incorporating automated code quality tools such as SonarCloud helps extensively in sustaining code health, making it easier to read, and actively helping enforce best practice during collaborative software development.
+
