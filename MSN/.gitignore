@@ -18,13 +18,8 @@ expo-env.d.ts
 *.mobileprovision
 
 # Google Service
-google-services.json
-GoogleService-Info.plist
-r
 
-# Firebase Config
-firebaseConfig.js
-firebaseConfig.ts
+
 
 # Metro
 .metro-health-check*
