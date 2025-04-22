@@ -48,7 +48,7 @@ jobs:
         working-directory: MSN
 
       - name: Prebuild Expo Project
-        run: npx expo prebuild --android
+        run: npx expo prebuild --paltform android
         working-directory: MSN
 
       - name: Build Android Release APK
